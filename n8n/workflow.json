@@ -1,0 +1,98 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "job-market-alert",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "0ea64550-3e33-493b-9baa-c62e2a731992",
+      "name": "Webhook",
+      "webhookId": "398561ed-1368-44e3-93b6-616e06bd3552"
+    },
+    {
+      "parameters": {
+        "jsCode": "const d = $input.first().json.body;\nconst msg = `✅ Pipeline: ${d.pipeline_status}\n📊 Total Jobs: ${d.total_jobs}\n💰 Avg Salary: $${d.average_salary_usd}\n🌍 Remote Ratio: Remote: ${d.remote_ratio.Remote}, On-site: ${d.remote_ratio[\"On-site\"]}\n🎓 Entry Level Jobs: ${d.zero_to_one_year_jobs}`;\nreturn [{ json: { message: msg } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        368,
+        0
+      ],
+      "id": "13b681dc-b3b3-43f7-96b8-bb8070c99a65",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://discord.com/api/webhooks/1505272804361113682/u2V3Eh7xGCPdZ4Ga1MwlEEH2I8iH6KZymEyeIA8KbLHvoJKba5QzkH0Kj8cHx_3S_qUo",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "content",
+              "value": "={{ $json.message }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        624,
+        0
+      ],
+      "id": "b08ef250-96a9-4fc2-a662-25b39d0c64a5",
+      "name": "HTTP Request"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionId": "3292d5e9-1a0d-4abe-8e9a-d3d5b0663e8d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5f0818038b4eb65aad3b0b530aef8006d155d16899e2277399c578cf0f0d1a95"
+  },
+  "id": "5PIDTfDcYGNwl45r",
+  "tags": []
+}
